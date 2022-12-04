@@ -38,8 +38,4 @@ public class UserService {
     public User getUserByName(String userName) {
         return userRepository.getRepository().get(userName);
     }
-
-    public void incrWin(User user) {
-        userRepository.getRepository().get(user.getName()).incrWin();
-    }
 }

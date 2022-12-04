@@ -3,8 +3,6 @@ package ru.javarush.quest.controller;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import ru.javarush.quest.model.Quest;
 import ru.javarush.quest.repository.QuestionRepository;
@@ -28,6 +26,8 @@ public class ContextListener implements ServletContextListener {
         log.info("Starting application");
         ServletContext servletContext = sce.getServletContext();
 
+        servletContext.setRequestCharacterEncoding("UTF-8");
+
         log.info("created user repository");
         UserRepository userRepository = new UserRepository();
         servletContext.setAttribute("userRepository", userRepository);
@@ -40,7 +40,7 @@ public class ContextListener implements ServletContextListener {
             log.info("load json file from quest");
             quest = loadJsonFile("quest.json");
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error("{}", e);
             throw new RuntimeException(e);
         }
 

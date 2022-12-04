@@ -48,17 +48,23 @@ public class QuestServlet extends HttpServlet {
         log.debug("User {}, currentIdQuestion: {}, questionText : {}, List answers : {}",
                 user.getName(), user.getCurrentIdQuestion(), questionText, answers);
 
-        if (answers.isEmpty() && !questionText.equals("Тебя вернули домой. Победа!")) {
-            req.setAttribute("text", questionText);
-            user.incrCountGames();
-            req.getRequestDispatcher("/WEB-INF/pages/final.jsp").forward(req, resp);
-        }
-
-        if (questionText.equals("Тебя вернули домой. Победа!")) {
+        if (currentIdQuestion == 3) {
             req.setAttribute("text", questionText);
             user.incrWin();
             user.incrCountGames();
+            log.debug("WINING: User {}, currentIdQuestion: {}, questionText : {}, List answers : {}",
+                    user.getName(), user.getCurrentIdQuestion(), questionText, answers);
             req.getRequestDispatcher("/WEB-INF/pages/final.jsp").forward(req, resp);
+            return;
+        }
+
+        if (answers.isEmpty()) {
+            req.setAttribute("text", questionText);
+            user.incrCountGames();
+            log.debug("LOSS: User {}, currentIdQuestion: {}, questionText : {}, List answers : {}",
+                    user.getName(), user.getCurrentIdQuestion(), questionText, answers);
+            req.getRequestDispatcher("/WEB-INF/pages/final.jsp").forward(req, resp);
+            return;
         }
 
         req.setAttribute("answers", answers);
