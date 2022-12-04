@@ -1,9 +1,12 @@
 package ru.javarush.quest.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.javarush.quest.model.Answer;
 import ru.javarush.quest.model.User;
 import ru.javarush.quest.repository.QuestionRepository;
 import ru.javarush.quest.repository.UserRepository;
+import ru.javarush.quest.service.QuestionService;
+import ru.javarush.quest.service.UserService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -18,10 +21,10 @@ import java.io.IOException;
 
 import java.util.List;
 
+@Slf4j
 @WebServlet(name = "QuestServlet", value = "/quest")
 public class QuestServlet extends HttpServlet {
-    UserRepository userRepository;
-    QuestionRepository questionRepository;
+    QuestionService questionService;
     private static final String QUEST_NAME = "MyQuest";
 
     @Override
@@ -29,8 +32,7 @@ public class QuestServlet extends HttpServlet {
         super.init(config);
 
         ServletContext servletContext = config.getServletContext();
-        userRepository= (UserRepository) servletContext.getAttribute("userRepository");
-        questionRepository = (QuestionRepository) servletContext.getAttribute("questionRepository");
+        questionService = (QuestionService) servletContext.getAttribute("questionService");
     }
 
 
@@ -40,8 +42,11 @@ public class QuestServlet extends HttpServlet {
         User user = (User) session.getAttribute("user");
 
         int currentIdQuestion = user.getCurrentIdQuestion();
-        String questionText = questionRepository.getQuestionTextById(QUEST_NAME, currentIdQuestion);
-        List<Answer> answers = questionRepository.getAnswersByQuestionId(QUEST_NAME, currentIdQuestion);
+        String questionText = questionService.getQuestionTextById(QUEST_NAME, currentIdQuestion);
+        List<Answer> answers = questionService.getAnswersByQuestionId(QUEST_NAME, currentIdQuestion);
+
+        log.debug("User {}, currentIdQuestion: {}, questionText : {}, List answers : {}",
+                user.getName(), user.getCurrentIdQuestion(), questionText, answers);
 
         if (answers.isEmpty() && !questionText.equals("Тебя вернули домой. Победа!")) {
             req.setAttribute("text", questionText);
@@ -58,7 +63,6 @@ public class QuestServlet extends HttpServlet {
 
         req.setAttribute("answers", answers);
         req.setAttribute("userName", user.getName());
-        req.setAttribute("ipAddress", user.getIpAddress());
         req.setAttribute("countGames", user.getCountGames());
         req.setAttribute("countWin", user.getCountWin());
         req.setAttribute("questionText", questionText);
@@ -72,6 +76,7 @@ public class QuestServlet extends HttpServlet {
         User user = (User) session.getAttribute("user");
 
         int currentQuestionId = Integer.parseInt(req.getParameter("nextQuestionId"));
+        log.debug("CurrentQuestionId: {}", currentQuestionId);
         user.setCurrentIdQuestion(currentQuestionId);
 
         resp.sendRedirect("quest");

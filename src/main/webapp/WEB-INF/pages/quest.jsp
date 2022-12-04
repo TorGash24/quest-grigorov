@@ -36,7 +36,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Статистика</h5>
                         <p class="card-text">Имя в игре: ${userName}</p>
-                        <p class="card-text">IP address: ${ipAddress}</p>
+                        <p class="card-text">IP address: <%=java.net.InetAddress.getLocalHost().getHostAddress()%></p>
                         <p class="card-text">Количество игр: ${countGames}</p>
                         <p class="card-text">Количество побед: ${countWin}</p>
                         <a href="${pageContext.request.contextPath}/../" class="card-link">Вернуться в начало</a>

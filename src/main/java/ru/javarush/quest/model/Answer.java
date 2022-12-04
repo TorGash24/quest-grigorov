@@ -3,9 +3,7 @@ package ru.javarush.quest.model;
 import lombok.*;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@ToString
 public class Answer {
     private long id;
     private String text;
