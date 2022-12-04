@@ -17,14 +17,12 @@ import java.io.IOException;
 @WebServlet(name="startServlet", value="/start")
 public class StartServlet extends HttpServlet {
     private UserRepository userRepository;
-    //private QuestionRepository questionRepository;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         ServletContext servletContext = config.getServletContext();
         userRepository = (UserRepository) servletContext.getAttribute("userRepository");
-        //questionRepository = (QuestionRepository) servletContext.getAttribute("questionRepository");
     }
 
 
