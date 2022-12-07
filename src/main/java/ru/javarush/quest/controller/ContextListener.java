@@ -23,44 +23,44 @@ import java.util.Objects;
 public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        log.info("Starting application");
         ServletContext servletContext = sce.getServletContext();
 
         servletContext.setRequestCharacterEncoding("UTF-8");
 
-        log.info("created user repository");
         UserRepository userRepository = new UserRepository();
+        log.debug("created user repository, size : {}", userRepository.getRepository().size());
         servletContext.setAttribute("userRepository", userRepository);
 
-        log.info("created quest repository");
         QuestionRepository questionRepository = new QuestionRepository();
+        log.info("created quest repository, size : {}", questionRepository.getQuests().size());
 
+        String fileName = "quest.json";
         Quest quest;
         try {
-            log.info("load json file from quest");
-            quest = loadJsonFile("quest.json");
+            quest = loadJsonFile(fileName);
+            log.debug("file read");
         } catch (IOException e) {
-            log.error("{}", e);
+            log.error("Error load file : {e}", e);
             throw new RuntimeException(e);
         }
 
         questionRepository.getQuests().put("MyQuest",quest);
-        log.info("Save quest from quest repository");
         servletContext.setAttribute("questionRepository", questionRepository);
+        log.debug("Save quest from questRepository");
 
         UserService userService = new UserService(userRepository);
-        log.info("Create userService");
+        log.debug("Create userService");
         servletContext.setAttribute("userService", userService);
 
         QuestionService questionService = new QuestionService(questionRepository);
-        log.info("Create questionService");
+        log.debug("Create questionService");
         servletContext.setAttribute("questionService", questionService);
 
     }
 
     private Quest loadJsonFile(String fileName) throws IOException {
         File file = new File(Objects.requireNonNull(getClass().getClassLoader().getResource(fileName)).getFile());
-        log.info("access load file : {}", fileName);
+        log.info("file loaded : {}", fileName);
         return new JsonMapper().readValue(file, Quest.class);
     }
 }

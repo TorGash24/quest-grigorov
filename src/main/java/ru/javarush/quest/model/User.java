@@ -2,10 +2,12 @@ package ru.javarush.quest.model;
 
 import lombok.*;
 
+import java.io.Serializable;
+
 @Data
 @Getter
 @Builder
-public class User {
+public class User implements Serializable {
     private final String name;
     private int countGames;
     private int countWin;

@@ -11,16 +11,14 @@ public class UserService {
     }
 
     public User createAndSaveUserFromRepository(String userName) {
+        if (userName == null) {
+            throw new IllegalArgumentException("UserName == null");
+        }
+
         if (isExist(userName)) {
             return getUserByName(userName);
         } else {
-            User user = User.builder()
-                    .name(userName)
-                    .countGames(0)
-                    .countWin(0)
-                    .currentIdQuestion(0)
-                    .build();
-
+            User user = createUserByName(userName);
             save(user);
 
             return user;
@@ -37,5 +35,14 @@ public class UserService {
 
     public User getUserByName(String userName) {
         return userRepository.getRepository().get(userName);
+    }
+
+    private User createUserByName(String userName) {
+        return User.builder()
+                .name(userName)
+                .countGames(0)
+                .countWin(0)
+                .currentIdQuestion(0)
+                .build();
     }
 }

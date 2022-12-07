@@ -28,8 +28,6 @@ public class StartServlet extends HttpServlet {
         userService = (UserService) servletContext.getAttribute("userService");
     }
 
-
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userName = req.getParameter("userName");
